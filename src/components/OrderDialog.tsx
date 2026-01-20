@@ -43,13 +43,24 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
   const startPollingOrderStatus = (orderId: string) => {
     setCurrentOrderId(orderId);
     
+    // Polling только на localhost
+    if (window.location.hostname !== 'localhost') {
+      console.log('ℹ️ Polling отключен на продакшене');
+      return;
+    }
+    
     const interval = setInterval(async () => {
       try {
-        const botUrl = window.location.hostname === 'localhost' 
-          ? `http://localhost:3001/api/order-status/${orderId}`
-          : `http://${window.location.hostname}:3001/api/order-status/${orderId}`;
+        const botUrl = `http://localhost:3001/api/order-status/${orderId}`;
         
-        const response = await fetch(botUrl);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        
+        const response = await fetch(botUrl, { signal: controller.signal });
+        clearTimeout(timeout);
+        
+        if (!response.ok) throw new Error('Response not ok');
+        
         const data = await response.json();
         
         if (data.status === 'confirmed') {
@@ -79,8 +90,12 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
             onOpenChange(false);
           }, 2000);
         }
-      } catch (error) {
-        console.error('Ошибка при проверке статуса:', error);
+      } catch (error: any) {
+        if (error.name === 'AbortError') {
+          console.warn('⚠️ Timeout при проверке статуса');
+        } else {
+          console.warn('⚠️ Ошибка при проверке статуса (бот может быть выключен):', error.message);
+        }
       }
     }, 2000); // Проверяем каждые 2 секунды
     
@@ -222,9 +237,10 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto" aria-describedby="order-dialog-description">
         <DialogHeader>
           <DialogTitle className="text-2xl">Заказ {consoleName}</DialogTitle>
+          <p id="order-dialog-description" className="sr-only">Форма заказа консоли</p>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
