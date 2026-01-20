@@ -148,7 +148,21 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
       const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
       
       if (botToken && chatId) {
-        const message = `📦 <b>Новый заказ!</b>\nID: ${orderId}\nКонсоль: ${orderData.console}\nИмя: ${orderData.name}\nТелефон: ${orderData.phone}\nВремя: ${orderData.deliveryTime}\nСтоимость: ${orderData.price}р`;
+        const message = `📦 <b>Новый заказ!</b>
+━━━━━━━━━━━━━━━━━━━━━━━
+<b>ID Заказа:</b> ${orderId}
+<b>Консоль:</b> ${orderData.console}
+━━━━━━━━━━━━━━━━━━━━━━━
+<b>👤 Клиент:</b> ${orderData.name}
+<b>📞 Телефон:</b> ${orderData.phone}
+<b>📍 Адрес доставки:</b> ${orderData.address}
+━━━━━━━━━━━━━━━━━━━━━━━
+<b>🚚 Тип доставки:</b> ${orderData.deliveryType === 'fast' ? 'СРОЧНО (2-3ч)' : 'ЗАПЛАНИРОВАННАЯ'}
+<b>⏰ Время доставки:</b> ${orderData.deliveryTime}
+━━━━━━━━━━━━━━━━━━━━━━━
+<b>💰 Стоимость:</b> <code>${orderData.price} ₽</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+✅ <i>Ожидает подтверждения</i>`;
 
         const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
         
@@ -162,7 +176,15 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
             body: JSON.stringify({
               chat_id: chatId,
               text: message,
-              parse_mode: 'HTML'
+              parse_mode: 'HTML',
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    { text: '✅ Подтвердить', callback_data: `confirm_${orderId}` },
+                    { text: '❌ Отклонить', callback_data: `reject_${orderId}` }
+                  ]
+                ]
+              }
             }),
             signal: controller.signal
           });
