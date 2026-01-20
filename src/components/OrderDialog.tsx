@@ -224,6 +224,7 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
             console.warn(`⚠️ Ошибка при отправке в Telegram (админ ${adminId}):`, error.message);
           }
         }
+      }
       
       const result = { success: true };
       
