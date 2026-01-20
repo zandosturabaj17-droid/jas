@@ -131,7 +131,7 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
       // Отправляем уведомление в Telegram бот
       const botUrl = window.location.hostname === 'localhost' 
         ? 'http://localhost:3001/api/notify-order'
-        : `http://${window.location.hostname}:3001/api/notify-order`;
+        : `https://${window.location.hostname}:3001/api/notify-order`;
       
       console.log('Отправка заказа на:', botUrl);
       console.log('Данные заказа:', { userId: 830161178, orderData, orderId });
