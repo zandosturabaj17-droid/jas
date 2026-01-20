@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* JAS Premium Design System - Plum & Milk palette */
+
+@layer base {
+  :root {
+    /* Plum - Primary dark color #381932 */
+    --background: 310 35% 15%;
+    --foreground: 35 100% 95%;
+
+    /* Milk - Light cream color #FFF3E6 */
+    --card: 35 100% 95%;
+    --card-foreground: 310 35% 15%;
+
+    --popover: 35 100% 95%;
+    --popover-foreground: 310 35% 15%;
+
+    --primary: 35 100% 95%;
+    --primary-foreground: 310 35% 15%;
+
+    --secondary: 310 25% 25%;
+    --secondary-foreground: 35 100% 95%;
+
+    --muted: 310 20% 20%;
+    --muted-foreground: 35 50% 75%;
+
+    --accent: 35 80% 85%;
+    --accent-foreground: 310 35% 15%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 35 100% 95%;
+
+    --border: 310 20% 25%;
+    --input: 310 20% 25%;
+    --ring: 35 100% 95%;
+
+    --radius: 0.75rem;
+
+    /* Custom tokens */
+    --plum: 310 35% 15%;
+    --plum-light: 310 25% 25%;
+    --plum-dark: 310 40% 10%;
+    --milk: 35 100% 95%;
+    --milk-dark: 35 60% 88%;
+    --gold: 45 90% 55%;
+    --gold-light: 45 100% 75%;
+
+    /* Gradients */
+    --gradient-plum: linear-gradient(135deg, hsl(310 35% 15%) 0%, hsl(310 40% 20%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(45 90% 55%) 0%, hsl(45 100% 65%) 100%);
+    --gradient-card: linear-gradient(145deg, hsl(35 100% 95%) 0%, hsl(35 80% 92%) 100%);
+
+    /* Shadows */
+    --shadow-soft: 0 4px 20px -4px hsl(310 35% 10% / 0.3);
+    --shadow-glow: 0 0 40px hsl(45 90% 55% / 0.15);
+    --shadow-card: 0 10px 40px -10px hsl(310 35% 10% / 0.2);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer utilities {
+  .text-gradient-gold {
+    background: linear-gradient(135deg, hsl(45 90% 55%) 0%, hsl(45 100% 70%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-plum-gradient {
+    background: var(--gradient-plum);
+  }
+
+  .bg-card-gradient {
+    background: var(--gradient-card);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+}
