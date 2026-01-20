@@ -143,7 +143,27 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
     };
     
     try {
-      // Отправляем уведомление в Telegram через Bot API
+      // Сначала отправляем на наш бот сервер (если доступен)
+      try {
+        const botServerUrl = `${window.location.origin === 'http://localhost:5173' ? 'http://localhost:3001' : 'https://jas-iota.vercel.app'}/api/notify-order`;
+        const response = await fetch(botServerUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            orderId,
+            orderData,
+            userId: import.meta.env.VITE_TELEGRAM_CHAT_ID
+          })
+        });
+        
+        if (response.ok) {
+          console.log("✅ Заказ отправлен на бот сервер");
+        }
+      } catch (error) {
+        console.warn("⚠️ Бот сервер недоступен, используем прямой Telegram API");
+      }
+      
+      // Параллельно отправляем через прямой API (для продакшена)
       const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
       const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
       
