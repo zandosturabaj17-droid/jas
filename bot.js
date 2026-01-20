@@ -164,7 +164,6 @@ bot.on('callback_query', handleCallbackQuery);
 app.post('/api/notify-order', async (req, res) => {
   try {
     const { 
-      userId, 
       orderData, 
       orderId 
     } = req.body;
@@ -179,32 +178,34 @@ app.post('/api/notify-order', async (req, res) => {
       price
     } = orderData;
 
+    // Получаем список администраторов из переменной окружения
+    const adminIdsStr = process.env.TELEGRAM_ADMIN_IDS || process.env.VITE_TELEGRAM_CHAT_ID;
+    const adminIds = adminIdsStr.split(',').map(id => id.trim());
+
     // Сохраняем заказ
     orders.set(orderId, {
-      userId,
+      adminIds,
       ...orderData,
       createdAt: new Date(),
       status: 'pending'
     });
 
     // Форматируем сообщение
-    const message = `
-📱 <b>Новый заказ!</b>
-
-🎮 <b>Консоль:</b> ${consoleName}
-💰 <b>Стоимость (1 сутки):</b> ${price} ₸
-
-📍 <b>Доставка:</b> ${deliveryType === 'fast' ? '⚡ Срочная (2-3 часа)' : '🕐 В выбранное время'}
-${deliveryType !== 'fast' ? `⏰ <b>Время:</b> ${deliveryTime}` : ''}
-
-📬 <b>Адрес:</b>
-${address}
-
-👤 <b>Имя:</b> ${name}
-📞 <b>Телефон:</b> ${phone}
-
-<b>Номер заказа:</b> #${orderId}
-    `;
+    const message = `📦 <b>Новый заказ!</b>
+━━━━━━━━━━━━━━━━━━━━━━━
+<b>ID Заказа:</b> ${orderId}
+<b>Консоль:</b> ${consoleName}
+━━━━━━━━━━━━━━━━━━━━━━━
+<b>👤 Клиент:</b> ${name}
+<b>📞 Телефон:</b> ${phone}
+<b>📍 Адрес доставки:</b> ${address}
+━━━━━━━━━━━━━━━━━━━━━━━
+<b>🚚 Тип доставки:</b> ${deliveryType === 'fast' ? 'СРОЧНО (2-3ч)' : 'ЗАПЛАНИРОВАННАЯ'}
+<b>⏰ Время доставки:</b> ${deliveryTime}
+━━━━━━━━━━━━━━━━━━━━━━━
+<b>💰 Стоимость:</b> <code>${price} ₽</code>
+━━━━━━━━━━━━━━━━━━━━━━━
+✅ <i>Ожидает подтверждения</i>`;
 
     const keyboard = {
       inline_keyboard: [
@@ -215,29 +216,29 @@ ${address}
       ]
     };
 
-    try {
-      // Отправляем сообщение пользователю
-      await bot.sendMessage(userId, message, {
-        parse_mode: 'HTML',
-        reply_markup: keyboard
-      });
-      
-      console.log(`📨 Заказ #${orderId} отправлен пользователю ${userId}`);
-      res.json({ success: true, message: 'Уведомление отправлено' });
-    } catch (telegramError) {
-      const errorMsg = telegramError instanceof Error ? telegramError.message : String(telegramError);
-      console.error(`❌ Ошибка Telegram (${userId}):`, errorMsg);
-      
-      // Если чат не найден - даём пользователю инструкцию
-      if (errorMsg.includes('chat not found')) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'Чат не найден. Напишите /start боту @JasRentalBot чтобы начать получать уведомления.',
-          userId
+    // Отправляем сообщение всем администраторам
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const adminId of adminIds) {
+      try {
+        await bot.sendMessage(adminId, message, {
+          parse_mode: 'HTML',
+          reply_markup: keyboard
         });
-      } else {
-        res.status(500).json({ success: false, error: errorMsg });
+        successCount++;
+        console.log(`📨 Заказ #${orderId} отправлен администратору ${adminId}`);
+      } catch (telegramError) {
+        errorCount++;
+        const errorMsg = telegramError instanceof Error ? telegramError.message : String(telegramError);
+        console.error(`❌ Ошибка отправки админу ${adminId}:`, errorMsg);
       }
+    }
+
+    if (successCount > 0) {
+      res.json({ success: true, message: `Уведомление отправлено ${successCount} администратор(ам)` });
+    } else {
+      res.status(500).json({ success: false, error: 'Не удалось отправить сообщение никому' });
     }
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);

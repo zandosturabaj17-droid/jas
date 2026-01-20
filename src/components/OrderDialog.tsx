@@ -165,9 +165,10 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
       
       // Параллельно отправляем через прямой API (для продакшена)
       const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
-      const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+      const adminIdsStr = import.meta.env.VITE_TELEGRAM_ADMIN_IDS || import.meta.env.VITE_TELEGRAM_CHAT_ID;
+      const adminIds = adminIdsStr.split(',').map(id => id.trim());
       
-      if (botToken && chatId) {
+      if (botToken && adminIds.length > 0) {
         const message = `📦 <b>Новый заказ!</b>
 ━━━━━━━━━━━━━━━━━━━━━━━
 <b>ID Заказа:</b> ${orderId}
@@ -186,41 +187,43 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
 
         const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
         
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 5000);
-        
-        try {
-          const response = await fetch(telegramUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              chat_id: chatId,
-              text: message,
-              parse_mode: 'HTML',
-              reply_markup: {
-                inline_keyboard: [
-                  [
-                    { text: '✅ Подтвердить', callback_data: `confirm_${orderId}` },
-                    { text: '❌ Отклонить', callback_data: `reject_${orderId}` }
-                  ]
-                ]
-              }
-            }),
-            signal: controller.signal
-          });
-
-          clearTimeout(timeout);
+        // Отправляем всем администраторам
+        for (const adminId of adminIds) {
+          const controller = new AbortController();
+          const timeout = setTimeout(() => controller.abort(), 5000);
           
-          if (response.ok) {
-            console.log("✅ Заказ отправлен в Telegram");
-          } else {
-            console.warn("⚠️ Ошибка отправки:", response.status);
+          try {
+            const response = await fetch(telegramUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                chat_id: adminId,
+                text: message,
+                parse_mode: 'HTML',
+                reply_markup: {
+                  inline_keyboard: [
+                    [
+                      { text: '✅ Подтвердить', callback_data: `confirm_${orderId}` },
+                      { text: '❌ Отклонить', callback_data: `reject_${orderId}` }
+                    ]
+                  ]
+                }
+              }),
+              signal: controller.signal
+            });
+
+            clearTimeout(timeout);
+            
+            if (response.ok) {
+              console.log(`✅ Заказ отправлен администратору ${adminId}`);
+            } else {
+              console.warn(`⚠️ Ошибка отправки админу ${adminId}:`, response.status);
+            }
+          } catch (error: any) {
+            clearTimeout(timeout);
+            console.warn(`⚠️ Ошибка при отправке в Telegram (админ ${adminId}):`, error.message);
           }
-        } catch (error: any) {
-          clearTimeout(timeout);
-          console.warn("⚠️ Ошибка при отправке в Telegram:", error.message);
         }
-      }
       
       const result = { success: true };
       
