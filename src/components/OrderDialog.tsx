@@ -128,36 +128,53 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
     };
     
     try {
-      // Отправляем уведомление в Telegram бот
-      const botUrl = window.location.hostname === 'localhost' 
-        ? 'http://localhost:3001/api/notify-order'
-        : `https://${window.location.hostname}:3001/api/notify-order`;
-      
-      console.log('Отправка заказа на:', botUrl);
-      console.log('Данные заказа:', { userId: 830161178, orderData, orderId });
-      
-      const response = await fetch(botUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: 830161178, // ID @Voydeh
-          orderData,
-          orderId
-        })
-      });
+      // Отправляем уведомление в Telegram бот только локально
+      if (window.location.hostname === 'localhost') {
+        const botUrl = 'http://localhost:3001/api/notify-order';
+        
+        console.log('Отправка заказа на:', botUrl);
+        console.log('Данные заказа:', { userId: 830161178, orderData, orderId });
+        
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000);
+        
+        try {
+          const response = await fetch(botUrl, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: 830161178, // ID @Voydeh
+              orderData,
+              orderId
+            }),
+            signal: controller.signal
+          });
 
-      console.log('Статус ответа:', response.status, response.statusText);
+          clearTimeout(timeout);
+          console.log('Статус ответа:', response.status, response.statusText);
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Ошибка ${response.status}: ${errorText}`);
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Ошибка ${response.status}: ${errorText}`);
+          }
+
+          const result = await response.json();
+          console.log("✅ Заказ отправлен в Telegram:", result);
+        } catch (botError: any) {
+          clearTimeout(timeout);
+          if (botError.name === 'AbortError') {
+            console.warn('⚠️ Timeout: Бот не ответил за 5 секунд');
+          } else {
+            console.warn('⚠️ Не удалось отправить в Telegram (бот может быть выключен):', botError.message);
+          }
+        }
+      } else {
+        console.log("ℹ️ На продакшене отправка в Telegram отключена");
       }
-
-      const result = await response.json();
       
-      console.log("✅ Заказ отправлен в Telegram:", result);
+      const result = { success: true };
       
       toast({
         title: "✅ Заказ отправлен!",
