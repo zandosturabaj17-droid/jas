@@ -143,50 +143,41 @@ const OrderDialog = ({ open, onOpenChange, consoleName, price }: OrderDialogProp
     };
     
     try {
-      // Отправляем уведомление в Telegram бот только локально
-      if (window.location.hostname === 'localhost') {
-        const botUrl = 'http://localhost:3001/api/notify-order';
-        
-        console.log('Отправка заказа на:', botUrl);
-        console.log('Данные заказа:', { userId: 830161178, orderData, orderId });
+      // Отправляем уведомление в Telegram через Bot API
+      const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+      const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+      
+      if (botToken && chatId) {
+        const message = `📦 <b>Новый заказ!</b>\nID: ${orderId}\nКонсоль: ${orderData.console}\nИмя: ${orderData.name}\nТелефон: ${orderData.phone}\nВремя: ${orderData.deliveryTime}\nСтоимость: ${orderData.price}р`;
+
+        const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
         
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 5000);
         
         try {
-          const response = await fetch(botUrl, {
+          const response = await fetch(telegramUrl, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              userId: 830161178, // ID @Voydeh
-              orderData,
-              orderId
+              chat_id: chatId,
+              text: message,
+              parse_mode: 'HTML'
             }),
             signal: controller.signal
           });
 
           clearTimeout(timeout);
-          console.log('Статус ответа:', response.status, response.statusText);
-
-          if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Ошибка ${response.status}: ${errorText}`);
-          }
-
-          const result = await response.json();
-          console.log("✅ Заказ отправлен в Telegram:", result);
-        } catch (botError: any) {
-          clearTimeout(timeout);
-          if (botError.name === 'AbortError') {
-            console.warn('⚠️ Timeout: Бот не ответил за 5 секунд');
+          
+          if (response.ok) {
+            console.log("✅ Заказ отправлен в Telegram");
           } else {
-            console.warn('⚠️ Не удалось отправить в Telegram (бот может быть выключен):', botError.message);
+            console.warn("⚠️ Ошибка отправки:", response.status);
           }
+        } catch (error: any) {
+          clearTimeout(timeout);
+          console.warn("⚠️ Ошибка при отправке в Telegram:", error.message);
         }
-      } else {
-        console.log("ℹ️ На продакшене отправка в Telegram отключена");
       }
       
       const result = { success: true };
