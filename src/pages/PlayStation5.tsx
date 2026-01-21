@@ -131,15 +131,15 @@ const PlayStation5 = () => {
                 initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
                 animate={{ opacity: 1, scale: 1, rotate: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="flex justify-center"
+                className="flex justify-center items-center"
               >
-                <div className="relative">
+                <div className="relative w-80 h-96">
                   <motion.div
                     animate={{ y: [0, -20, 0] }}
                     transition={{ duration: 3, repeat: Infinity }}
-                    className="w-64 h-80"
+                    className="w-full h-full flex items-center justify-center"
                   >
-                    <img src="/ps5.png" alt="PlayStation 5" className="w-full h-full object-contain" />
+                    <img src="/ps5.png" alt="PlayStation 5" className="w-full h-full object-contain drop-shadow-2xl" />
                   </motion.div>
                 </div>
               </motion.div>
