@@ -3,18 +3,6 @@ import ConsoleCard from "./ConsoleCard";
 
 const consoles = [
   {
-    name: "PlayStation 4 Pro",
-    price: 5000,
-    image: "🎮",
-    features: [
-      "1 геймпад DualShock 4",
-      "Доступ к 100+ играм",
-      "Full HD / 4K",
-      "Бесплатная доставка",
-    ],
-    popular: false,
-  },
-  {
     name: "PlayStation 5",
     price: 7000,
     image: "🕹️",
@@ -50,7 +38,7 @@ const Catalog = () => {
         </motion.div>
 
         {/* Console cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="flex justify-center max-w-4xl mx-auto">
           {consoles.map((console, index) => (
             <ConsoleCard
               key={console.name}

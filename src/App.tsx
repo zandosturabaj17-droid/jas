@@ -11,6 +11,7 @@ import Catalog from "./components/Catalog";
 import Footer from "./components/Footer";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PlayStation5 from "./pages/PlayStation5";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/playstation5" element={<PlayStation5 />} />
         </Routes>
       </TooltipProvider>
     </QueryClientProvider>
