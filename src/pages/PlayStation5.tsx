@@ -49,23 +49,26 @@ const PlayStation5 = () => {
 
   const rentalPlans = [
     {
-      duration: "3 дня",
-      price: "6 300₸",
-      discount: "10%",
+      duration: "1 день",
+      price: "7 000₸",
+      discount: "0%",
+      controllers: "1 контроллер",
       color: "from-blue-600 to-blue-700",
     },
     {
-      duration: "7 дней",
-      price: "5 600₸",
-      discount: "20%",
-      color: "from-gold to-gold-light",
-      featured: true,
+      duration: "2 дня",
+      price: "12 600₸",
+      discount: "10%",
+      controllers: "3 контроллера",
+      color: "from-purple-600 to-purple-700",
     },
     {
-      duration: "10 дней",
-      price: "5 250₸",
-      discount: "25%",
-      color: "from-purple-600 to-purple-700",
+      duration: "5 дней",
+      price: "29 750₸",
+      discount: "15%",
+      controllers: "5 контроллеров",
+      color: "from-gold to-gold-light",
+      featured: true,
     },
   ];
 
@@ -243,9 +246,16 @@ const PlayStation5 = () => {
                       </span>
                     </div>
 
-                    <p className="text-sm text-muted-foreground mb-6">
+                    <p className="text-sm text-muted-foreground mb-3">
                       Включает доставку и настройку
                     </p>
+
+                    <div className="flex items-center gap-2 mb-6 p-3 rounded-lg bg-gold/10">
+                      <Gamepad2 className="h-4 w-4 text-gold" />
+                      <span className="text-sm font-semibold text-gold">
+                        {plan.controllers}
+                      </span>
+                    </div>
 
                     <Button 
                       className={`w-full font-bold ${
