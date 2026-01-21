@@ -9,7 +9,7 @@ const PlayStation5 = () => {
   const ps5Console = {
     name: "PlayStation 5",
     price: 7000,
-    image: "/ps5.svg",
+    image: "/ps5.png",
     features: [
       "1 геймпад DualSense",
       "Доступ к 150+ играм",
@@ -139,7 +139,7 @@ const PlayStation5 = () => {
                     transition={{ duration: 3, repeat: Infinity }}
                     className="w-64 h-80"
                   >
-                    <img src="/ps5.svg" alt="PlayStation 5" className="w-full h-full" />
+                    <img src="/ps5.png" alt="PlayStation 5" className="w-full h-full object-contain" />
                   </motion.div>
                 </div>
               </motion.div>
