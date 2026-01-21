@@ -42,7 +42,7 @@ const Navbar = () => {
               <User className="h-4 w-4 mr-2" />
               Войти
             </Button>
-            <Button variant="gold" size="sm">
+            <Button variant="gold" size="sm" onClick={() => navigate("/rent")}>
               Заказать
             </Button>
           </div>
@@ -82,7 +82,10 @@ const Navbar = () => {
                   <User className="h-4 w-4 mr-2" />
                   Войти
                 </Button>
-                <Button variant="gold" className="w-full">
+                <Button variant="gold" className="w-full" onClick={() => {
+                  navigate("/rent");
+                  setIsOpen(false);
+                }}>
                   Заказать
                 </Button>
               </div>
