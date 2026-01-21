@@ -47,11 +47,15 @@ const ConsoleCard = ({ name, price, image, features, popular = false, delay = 0 
       {/* Console image placeholder */}
       <div className="relative w-full h-48 mb-6 flex items-center justify-center">
         <motion.div 
-          className="w-40 h-40 rounded-2xl bg-plum/10 flex items-center justify-center"
+          className="w-40 h-40 rounded-2xl bg-plum/10 flex items-center justify-center overflow-hidden"
           animate={{ y: [0, -5, 0] }}
           transition={{ duration: 3, repeat: Infinity }}
         >
-          <span className="text-6xl">{image}</span>
+          {image.includes('/') || image.includes('.') ? (
+            <img src={image} alt={name} className="w-full h-full object-contain" />
+          ) : (
+            <span className="text-6xl">{image}</span>
+          )}
         </motion.div>
       </div>
 
