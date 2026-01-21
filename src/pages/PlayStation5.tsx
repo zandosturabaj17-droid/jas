@@ -9,7 +9,7 @@ const PlayStation5 = () => {
   const ps5Console = {
     name: "PlayStation 5",
     price: 7000,
-    image: "🕹️",
+    image: "/ps5.svg",
     features: [
       "1 геймпад DualSense",
       "Доступ к 150+ играм",
@@ -59,9 +59,9 @@ const PlayStation5 = () => {
     {
       duration: "2 дня",
       price: "14 000₸",
-      total: "5 дней",
-      bonus: "+3 дня в подарок",
-      discount: "60%",
+      total: "3 дня",
+      bonus: "+1 день в подарок",
+      discount: "15%",
       color: "from-purple-600 to-purple-700",
     },
     {
@@ -137,9 +137,9 @@ const PlayStation5 = () => {
                   <motion.div
                     animate={{ y: [0, -20, 0] }}
                     transition={{ duration: 3, repeat: Infinity }}
-                    className="text-9xl"
+                    className="w-64 h-80"
                   >
-                    🕹️
+                    <img src="/ps5.svg" alt="PlayStation 5" className="w-full h-full" />
                   </motion.div>
                 </div>
               </motion.div>

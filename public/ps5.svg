@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" width="300" height="400">
+  <!-- Console body -->
+  <defs>
+    <linearGradient id="consoleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#f5f5f5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e0e0e0;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="controllerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2a2a2a;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1a1a1a;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Console main body -->
+  <path d="M 50 80 L 100 60 L 200 60 L 250 80 L 250 320 L 50 320 Z" fill="url(#consoleGradient)" stroke="#999" stroke-width="2"/>
+  
+  <!-- Console top edge -->
+  <path d="M 100 60 L 200 60 L 190 75 L 110 75 Z" fill="#f0f0f0" stroke="#999" stroke-width="1"/>
+  
+  <!-- Left side -->
+  <path d="M 50 80 L 100 60 L 110 75 L 60 95 Z" fill="#e8e8e8" stroke="#999" stroke-width="1"/>
+  
+  <!-- PlayStation logo area -->
+  <circle cx="150" cy="120" r="8" fill="none" stroke="#0070CC" stroke-width="2"/>
+  <text x="150" y="125" font-size="16" font-weight="bold" fill="#0070CC" text-anchor="middle">PS</text>
+  
+  <!-- Controller left -->
+  <path d="M 80 280 Q 60 300 50 320 Q 70 340 90 335 Q 85 310 90 290 Z" fill="url(#controllerGradient)" stroke="#333" stroke-width="1"/>
+  
+  <!-- Controller right -->
+  <path d="M 220 280 Q 240 300 250 320 Q 230 340 210 335 Q 215 310 210 290 Z" fill="url(#controllerGradient)" stroke="#333" stroke-width="1"/>
+  
+  <!-- Controller buttons area left -->
+  <circle cx="70" cy="310" r="3" fill="#4A90E2"/>
+  <circle cx="70" cy="325" r="3" fill="#E85D75"/>
+  
+  <!-- Controller buttons area right -->
+  <circle cx="230" cy="310" r="3" fill="#4A90E2"/>
+  <circle cx="230" cy="325" r="3" fill="#E85D75"/>
+  
+  <!-- Screen/Display area -->
+  <rect x="70" y="140" width="160" height="130" rx="5" fill="#1a1a1a" stroke="#555" stroke-width="2"/>
+  
+  <!-- Screen reflection -->
+  <rect x="75" y="145" width="150" height="40" rx="3" fill="#333" opacity="0.5"/>
+  
+  <!-- Shadow/Depth -->
+  <ellipse cx="150" cy="350" rx="100" ry="15" fill="#000000" opacity="0.2"/>
+</svg>
