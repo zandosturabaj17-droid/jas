@@ -51,22 +51,25 @@ const PlayStation5 = () => {
     {
       duration: "1 день",
       price: "7 000₸",
+      total: "1 день",
+      bonus: "",
       discount: "0%",
-      controllers: "1 контроллер",
       color: "from-blue-600 to-blue-700",
     },
     {
       duration: "2 дня",
-      price: "12 600₸",
-      discount: "10%",
-      controllers: "3 контроллера",
+      price: "14 000₸",
+      total: "5 дней",
+      bonus: "+3 дня в подарок",
+      discount: "60%",
       color: "from-purple-600 to-purple-700",
     },
     {
       duration: "5 дней",
-      price: "29 750₸",
-      discount: "15%",
-      controllers: "5 контроллеров",
+      price: "35 000₸",
+      total: "7 дней",
+      bonus: "+2 дня в подарок",
+      discount: "40%",
       color: "from-gold to-gold-light",
       featured: true,
     },
@@ -246,16 +249,20 @@ const PlayStation5 = () => {
                       </span>
                     </div>
 
-                    <p className="text-sm text-muted-foreground mb-3">
+                    <div className="mb-4 p-3 rounded-lg bg-foreground/5 border border-gold/20">
+                      <p className="text-lg font-bold text-gold mb-1">
+                        {plan.total}
+                      </p>
+                      {plan.bonus && (
+                        <p className="text-sm font-semibold text-green-400">
+                          {plan.bonus}
+                        </p>
+                      )}
+                    </div>
+
+                    <p className="text-sm text-muted-foreground mb-6">
                       Включает доставку и настройку
                     </p>
-
-                    <div className="flex items-center gap-2 mb-6 p-3 rounded-lg bg-gold/10">
-                      <Gamepad2 className="h-4 w-4 text-gold" />
-                      <span className="text-sm font-semibold text-gold">
-                        {plan.controllers}
-                      </span>
-                    </div>
 
                     <Button 
                       className={`w-full font-bold ${
