@@ -36,7 +36,7 @@ const App = () => (
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/playstation5" element={<PlayStation5 />} />
+          <Route path="/rent" element={<PlayStation5 />} />
         </Routes>
       </TooltipProvider>
     </QueryClientProvider>
